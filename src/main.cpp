@@ -13,6 +13,7 @@ void test_column_class() {
 
     std::cout << "Occurrences de 10: " << col.valueCount(10) << std::endl;
     std::cout << "Superieurs a 15: " << col.countValuesGreaterThan(15) << std::endl;
+    // int t = col.getValueAt(3); // to test out_of_range exception
 }
 
 int main() {
