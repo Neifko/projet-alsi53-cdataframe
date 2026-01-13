@@ -62,3 +62,11 @@ int Column::countValuesLessThan(int value) const {
 int Column::countValuesEqualTo(int value) const {
     return valueCount(value);
 }
+
+std::string Column::getName() const {
+    return title;
+}
+
+size_t Column::getSize() const {
+    return data.size();
+}

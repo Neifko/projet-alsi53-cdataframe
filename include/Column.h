@@ -68,6 +68,18 @@ public :
     int countValuesEqualTo(int value) const;
 
     /**
+     * Get the name of the column
+     * @return : The column title
+     */
+    std::string getName() const;
+
+    /**
+     * Get the current size of the column
+     * @return : size of the column
+     */
+    size_t getSize() const;
+
+    /**
     * Destructor : free the memory allocated for the column
     */
     ~Column() = default;

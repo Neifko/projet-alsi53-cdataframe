@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "Column.h"
+#include "CDataFrame.h"
 
 void test_column_class() {
     Column col("Test");
@@ -20,6 +21,24 @@ int main() {
     std::cout << "Hello, World!" << std::endl;
 
     test_column_class();
+
+    CDataFrame myDataframe;
+
+    myDataframe.addColumn("ID");
+    myDataframe.addColumn("Age");
+    myDataframe.addColumn("Score");
+
+    myDataframe.insertRow({1, 20, 100});
+    myDataframe.insertRow({2, 21, 200});
+    myDataframe.insertRow({3, 22, 300});
+
+    myDataframe.info();
+    myDataframe.print();
+
+    myDataframe.deleteColumn("Age");
+
+    std::cout << "--------------------------------------" << std::endl;
+    myDataframe.print();
 
     return 0;
 }

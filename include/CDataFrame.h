@@ -55,6 +55,11 @@ public:
     size_t getRowsCount() const;
 
     /**
+    * @brief Display the entire dataframe content
+    */
+    void print() const;
+
+    /**
     * @brief Display dataframe information
     */
     void info() const;
