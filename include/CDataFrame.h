@@ -4,12 +4,12 @@
 
 #ifndef PROJET_ALSI53_CDATAFRAME_CDATAFRAME_H
 #define PROJET_ALSI53_CDATAFRAME_CDATAFRAME_H
-#include "../Column.h"
+#include "Column.h"
 #include <vector>
 #include <memory>
 
 class CDataFrame {
-    std::vector<std::shared_ptr<Column>> columns;
+    std::vector<std::shared_ptr<Column> > columns;
 
 public:
     /**
@@ -33,7 +33,7 @@ public:
     * @brief Set column names
     * @param names : Vector of column names
     */
-    void setColumnNames(const std::vector<std::string>& names);
+    void setColumnNames(const std::vector<std::string> &names);
 
     /**
     * @brief Get the number of columns
@@ -46,7 +46,7 @@ public:
     * @param values : Vector of values to insert
     * @return : true if successful
     */
-    bool insertRow(const std::vector<int>& values);
+    bool insertRow(const std::vector<int> &values);
 
     /**
     * @brief Get the number of rows
@@ -58,8 +58,6 @@ public:
     * @brief Display dataframe information
     */
     void info() const;
-
-
 };
 
 

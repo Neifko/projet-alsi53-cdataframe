@@ -70,7 +70,7 @@ public :
     /**
     * Destructor : free the memory allocated for the column
     */
-    ~Column();
+    ~Column() = default;
 };
 
 
