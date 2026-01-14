@@ -17,11 +17,7 @@ void test_column_class() {
     // int t = col.getValueAt(3); // to test out_of_range exception
 }
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
-
-    test_column_class();
-
+void test_dataframe_class() {
     CDataFrame myDataframe;
 
     myDataframe.addColumn("ID");
@@ -39,6 +35,15 @@ int main() {
 
     std::cout << "--------------------------------------" << std::endl;
     myDataframe.print();
+}
+
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+
+    test_column_class();
+
+    test_dataframe_class();
+
 
     return 0;
 }
