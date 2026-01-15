@@ -42,6 +42,13 @@ public :
     void print() const;
 
     /**
+     *Convert a column value to string
+     * @param i : index of the value to retrieve
+     * @return : string representation of the value
+     */
+    std::string valueToString(size_t i) const;
+
+    /**
      * Return the number of occurrences of a value in the column
      * @param value : value to search
      * @return : number of occurrences

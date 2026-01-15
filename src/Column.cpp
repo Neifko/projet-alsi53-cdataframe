@@ -25,6 +25,20 @@ void Column::print() const {
 	}
 }
 
+std::string Column::valueToString(size_t i) const {
+	return std::visit([](auto&& arg) -> std::string {
+		using T = std::decay_t<decltype(arg)>;
+		if constexpr (std::is_same_v<T, std::monostate>) {
+			return "NULL";
+		} else if constexpr (std::is_same_v<T, std::string>) {
+			return arg;
+		} else {
+			return std::to_string(arg);
+		}
+	}, data[i]);
+
+}
+
 int Column::valueCount(const ColumnValue& value) const {
 	int count = 0;
 	for (int v : data) {
