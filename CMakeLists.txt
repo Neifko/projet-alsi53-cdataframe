@@ -7,6 +7,7 @@ add_executable(projet_alsi53_cdataframe src/main.cpp
         src/Column.cpp
         include/Column.h
         src/CDataFrame.cpp
-        include/CDataFrame.h)
+        include/CDataFrame.h
+        include/ColumnValue.h)
 
 target_include_directories(projet_alsi53_cdataframe PUBLIC include)

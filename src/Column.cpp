@@ -1,12 +1,20 @@
 #include "Column.h"
 #include <iostream>
 
-Column::Column(const std::string& columnTitle)
-	: title(columnTitle) {
+
+Column::Column(ColumnType type) {
 	data.reserve(256);
+	columnType = type;
 }
 
-bool Column::insertValue(int value) {
+
+Column::Column(ColumnType type, const std::string& columnTitle)
+	: title(columnTitle) {
+	data.reserve(256);
+	columnType = type;
+}
+
+bool Column::insertValue(const ColumnValue& value) {
 	data.push_back(value);
 	return true;
 }
@@ -17,7 +25,7 @@ void Column::print() const {
 	}
 }
 
-int Column::valueCount(int value) const {
+int Column::valueCount(const ColumnValue& value) const {
 	int count = 0;
 	for (int v : data) {
 		if (v == value) {
@@ -27,14 +35,14 @@ int Column::valueCount(int value) const {
 	return count;
 }
 
-int Column::getValueAt(int index) const {
+const ColumnValue& Column::getValueAt(int index) const {
 	if (index < 0 || index >= data.size()) {
 		throw std::out_of_range("Index out of range in Column::getValueAt");
 	}
 	return data[index];
 }
 
-int Column::countValuesGreaterThan(int value) const {
+int Column::countValuesGreaterThan(const ColumnValue& value) const {
 	int count = 0;
 	for (int v : data) {
 		if (v > value) {
@@ -44,7 +52,7 @@ int Column::countValuesGreaterThan(int value) const {
 	return count;
 }
 
-int Column::countValuesLessThan(int value) const {
+int Column::countValuesLessThan(const ColumnValue& value) const {
 	int count = 0;
 	for (int v : data) {
 		if (v < value) {
@@ -54,7 +62,7 @@ int Column::countValuesLessThan(int value) const {
 	return count;
 }
 
-int Column::countValuesEqualTo(int value) const {
+int Column::countValuesEqualTo(const ColumnValue& value) const {
 	return valueCount(value);
 }
 
@@ -66,7 +74,7 @@ void Column::setName(const std::string& newTitle) {
 	title = newTitle;
 }
 
-void Column::setValueAt(int index, int newValue) {
+void Column::setValueAt(int index, const ColumnValue& newValue) {
 	if (index < 0 || index >= data.size()) {
 		throw std::out_of_range("Index out of range in Column::setValueAt");
 	}
