@@ -1,7 +1,3 @@
-//
-// Created by victor on 09/01/2026.
-//
-
 #ifndef PROJET_ALSI53_CDATAFRAME_CDATAFRAME_H
 #define PROJET_ALSI53_CDATAFRAME_CDATAFRAME_H
 #include "Column.h"
@@ -140,13 +136,6 @@ public:
     * @brief Display dataframe information
     */
     void info() const;
-
-    /**
-    * @brief Set column names
-    * @param names : Vector of column names
-    * @deprecated should not exist
-    */
-    void setColumnNames(const std::vector<std::string> &names);
 };
 
 

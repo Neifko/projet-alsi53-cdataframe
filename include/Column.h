@@ -1,12 +1,7 @@
-//
-// Created by victor on 09/01/2026.
-//
-
 #ifndef PROJET_ALSI53_CDATAFRAME_COLUMN_H
 #define PROJET_ALSI53_CDATAFRAME_COLUMN_H
 #include <string>
 #include <vector>
-
 
 class Column {
 private:
@@ -80,10 +75,28 @@ public :
     size_t getSize() const;
 
     /**
+     * @brief Rename the column
+     * @param newTitle : The new title
+     */
+    void setName(const std::string& newTitle);
+
+    /**
+     * @brief Replace value at a specific index
+     * @param index : index to replace
+     * @param newValue : the new value
+     */
+    void setValueAt(int index, int newValue);
+
+    /**
+     * @brief Delete value at a specific index
+     * @param index : index to delete
+     */
+    void deleteValueAt(size_t index);
+
+    /**
     * Destructor : free the memory allocated for the column
     */
     ~Column() = default;
 };
-
 
 #endif //PROJET_ALSI53_CDATAFRAME_COLUMN_H
