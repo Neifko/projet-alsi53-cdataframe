@@ -17,8 +17,7 @@ enum class ColumnType {
     CHAR,
     FLOAT,
     DOUBLE,
-    STRING,
-    OBJECT
+    STRING
 };
 
 using ColumnValue = std::variant<
@@ -33,8 +32,7 @@ using ColumnValue = std::variant<
     int8_t,
     float,
     double,
-    std::string,
-    std::any
+    std::string
 >;
 
 #endif //PROJET_ALSI53_CDATAFRAME_COLUMNVALUE_H

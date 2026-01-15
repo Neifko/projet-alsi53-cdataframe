@@ -16,15 +16,9 @@ public:
     /**
      *Fill the dataframe with user typed data
      */
-    void fillDataFrame();
+    //void fillDataFrame();
 
-    /**
-     *Fill the dataframe with hardcoded data in array of arrays
-     *like {{1,2,3},{4,5,6},{7,8,9}}
-     * @param data : array of arrays of integers
-     */
-    void fillDataFrame(const std::vector<std::vector<int> > &data);
-
+    void fillDataFrame(const std::vector<std::vector<ColumnValue>>& data);
     /**
     * @brief Display the entire dataframe content
     */
@@ -49,8 +43,7 @@ public:
     * @param values : Vector of values to insert
     * @return : true if successful
     */
-    bool insertRow(const std::vector<int> &values);
-
+    bool insertRow(const std::vector<ColumnValue>& values);
     /**
      *Delete a row by index
      * @param rowIndex : index of the row to delete
@@ -58,10 +51,11 @@ public:
     void deleteRow(size_t rowIndex);
 
     /**
-    * Create Dataframe with given column names
-    * @param columnTitle
-    */
-    void addColumn(std::string columnTitle);
+      * @brief Add a column with a specific type
+      * @param columnTitle Title
+      * @param type The type of data (INT, FLOAT, STRING...)
+      */
+    void addColumn(std::string columnTitle, ColumnType type);
 
     /**
     * @brief Delete a column by name
@@ -81,24 +75,21 @@ public:
      * @param value : value to search
      * @return : true if the value exists, false otherwise
      */
-    bool valueExists(int value) const;
-
+    bool valueExists(const ColumnValue& value) const;
     /**
      *Get a value from the dataframe by indexes
      * @param rowIndex : row index of the value to get
      * @param colIndex : column index of the value to get
      * @return : value at the given indexes
      */
-    int getValue(size_t rowIndex, size_t colIndex) const;
-
+    const ColumnValue& getValue(size_t rowIndex, size_t colIndex) const;
     /**
      *Replace value in the dataframe, find the value by indexes
      * @param rowIndex : row index of the value to replace
      * @param colIndex : column index of the value to replace
      * @param newValue : new value to set
      */
-    void replaceValue(size_t rowIndex, size_t colIndex, int newValue);
-
+    void replaceValue(size_t rowIndex, size_t colIndex, const ColumnValue& newValue);
     /**
     * @brief Get the number of columns
     * @return : Number of columns
@@ -116,21 +107,21 @@ public:
      * @param value : value to count
      * @return : number of cells equals to the given value
      */
-    size_t countValuesEqualTo(int value) const;
+    size_t countValuesEqualTo(const ColumnValue& value) const;
 
     /**
      *Count the number of cells greater than a given value in the dataframe
      * @param value : value to compare
      * @return : number of cells greater than the given value
      */
-    size_t countValuesGreaterThan(int value) const;
+    size_t countValuesGreaterThan(const ColumnValue& value) const;
 
     /**
      *Count the number of cells less than a given value in the dataframe
      * @param value : value to compare
      * @return : number of cells less than the given value
      */
-    size_t countValuesLessThan(int value) const;
+    size_t countValuesLessThan(const ColumnValue& value) const;
 
     /**
     * @brief Display dataframe information

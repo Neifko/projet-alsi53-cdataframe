@@ -2,16 +2,14 @@
 #include <iostream>
 
 
-Column::Column(ColumnType type) {
+Column::Column(ColumnType type) : columnType(type) {
 	data.reserve(256);
-	columnType = type;
 }
 
 
 Column::Column(ColumnType type, const std::string& columnTitle)
-	: title(columnTitle) {
+	: title(columnTitle), columnType(type){
 	data.reserve(256);
-	columnType = type;
 }
 
 bool Column::insertValue(const ColumnValue& value) {
@@ -21,7 +19,7 @@ bool Column::insertValue(const ColumnValue& value) {
 
 void Column::print() const {
 	for (size_t i = 0; i < data.size(); ++i) {
-		std::cout << "[" << i << "] " << data[i] << std::endl;
+		std::cout << "[" << i << "] " << valueToString(i) << std::endl;
 	}
 }
 
@@ -30,18 +28,19 @@ std::string Column::valueToString(size_t i) const {
 		using T = std::decay_t<decltype(arg)>;
 		if constexpr (std::is_same_v<T, std::monostate>) {
 			return "NULL";
-		} else if constexpr (std::is_same_v<T, std::string>) {
+		}
+		else if constexpr (std::is_same_v<T, std::string>) {
 			return arg;
-		} else {
+		}
+		else {
 			return std::to_string(arg);
 		}
-	}, data[i]);
-
+		}, data[i]);
 }
 
 int Column::valueCount(const ColumnValue& value) const {
 	int count = 0;
-	for (int v : data) {
+	for (const auto& v : data) {
 		if (v == value) {
 			count++;
 		}
@@ -58,9 +57,11 @@ const ColumnValue& Column::getValueAt(int index) const {
 
 int Column::countValuesGreaterThan(const ColumnValue& value) const {
 	int count = 0;
-	for (int v : data) {
-		if (v > value) {
-			count++;
+	for (const auto& v : data) {
+		if (v.index() == value.index()) {
+			if (v > value) {
+				count++;
+			}
 		}
 	}
 	return count;
@@ -68,9 +69,11 @@ int Column::countValuesGreaterThan(const ColumnValue& value) const {
 
 int Column::countValuesLessThan(const ColumnValue& value) const {
 	int count = 0;
-	for (int v : data) {
-		if (v < value) {
-			count++;
+	for (const auto& v : data) {
+		if (v.index() == value.index()) {
+			if (v < value) {
+				count++;
+			}
 		}
 	}
 	return count;
@@ -96,7 +99,7 @@ void Column::setValueAt(int index, const ColumnValue& newValue) {
 }
 
 void Column::deleteValueAt(size_t index) {
-	if (index < 0 || index >= data.size()) {
+	if (index >= data.size()) {
 		throw std::out_of_range("Index out of range in Column::deleteValueAt");
 	}
 	data.erase(data.begin() + index);
