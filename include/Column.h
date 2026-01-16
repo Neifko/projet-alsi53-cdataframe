@@ -118,6 +118,46 @@ public :
     * Destructor : free the memory allocated for the column
     */
     ~Column() = default;
+
+    /**
+    * @brief: Sort a column according to a given order
+    * @param ascending : true for ascending, false for descending
+    */
+    void sort(bool ascending = true);
+
+    /**
+    * @brief: Display the contents of a column in sorted order
+    * @param ascending: true for ascending, false for descending
+    */
+    void printSorted(bool ascending = true);
+
+    /**
+    * @brief: Remove the index of a column
+    */
+    void eraseIndex();
+
+    /**
+    * @brief: Check if an index is correct
+    * @return: -1: index not existing,
+    0: the index exists but invalid,
+    1: the index is correct
+    */
+    int checkIndex() const;
+
+    /**
+    * @brief: Update the index
+    */
+    void updateIndex();
+
+    /**
+    * @brief: Test if a value exists in a column
+    * @param val: The value to search for
+    * @return: -1: column not sorted,
+    0: value not found
+    1: value found
+    */
+    template<typename T>
+    int searchValue(const T& val) const;
 };
 
 #endif //PROJET_ALSI53_CDATAFRAME_COLUMN_H
