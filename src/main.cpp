@@ -4,15 +4,19 @@
 
 void test_column_class();
 void test_dataframe_class();
+void test_part2_multitype();
+
+
 
 int main() {
 	test_column_class();
 	test_dataframe_class();
+	test_part2_multitype();
 	return 0;
 }
 
 void test_column_class() {
-	Column col("Test");
+	Column col(ColumnType::INT);
 
 	col.insertValue(10);
 	col.insertValue(20);
@@ -25,13 +29,50 @@ void test_column_class() {
 	//int t = col.getValueAt(3); // to test out_of_range exception
 }
 
+void test_part2_multitype() {
+    std::cout << "\n\n=== PROJET PARTIE 2 : DATAFRAME MULTI-TYPES ===" << std::endl;
+
+    CDataFrame myDataframe;
+
+    std::cout << "[INFO] Creation des colonnes..." << std::endl;
+    myDataframe.addColumn("Nom", ColumnType::STRING);
+    myDataframe.addColumn("Age", ColumnType::INT);
+    myDataframe.addColumn("Moyenne", ColumnType::FLOAT);
+
+    std::cout << "[INFO] Insertion des lignes..." << std::endl;
+
+    myDataframe.insertRow({ std::string("Alice"), 20, 15.5f });
+    myDataframe.insertRow({ std::string("Bob"), 22, 12.0f });
+    myDataframe.insertRow({ std::string("Charlie"), 20, 18.5f });
+
+    myDataframe.insertRow({ std::string("David"), std::monostate{}, 9.5f });
+
+    std::cout << "\n--- Affichage du Dataframe ---" << std::endl;
+    myDataframe.print();
+
+    std::cout << "\n--- Tests Statistiques ---" << std::endl;
+
+    int countAge20 = myDataframe.countValuesEqualTo(20);
+    std::cout << "Nombre de personnes ayant 20 ans : " << countAge20 << std::endl;
+
+    int countMoyenneSup10 = myDataframe.countValuesGreaterThan(10.0f);
+    std::cout << "Nombre de moyennes > 10.0 : " << countMoyenneSup10 << std::endl;
+
+    std::cout << "\n--- Modification ---" << std::endl;
+    myDataframe.renameColumn("Moyenne", "Note_Finale");
+
+    myDataframe.replaceValue(1, 2, 14.5f);
+
+    myDataframe.print();
+}
+
 void test_dataframe_class() {
 	std::cout << "=== TEST CDATAFRAME ===" << std::endl;
 	CDataFrame myDataframe;
 
-	myDataframe.addColumn("ID");
-	myDataframe.addColumn("Age");
-	myDataframe.addColumn("Score");
+	myDataframe.addColumn("ID", ColumnType::INT);
+	myDataframe.addColumn("Age", ColumnType::INT);
+	myDataframe.addColumn("Score", ColumnType::INT);
 
 	myDataframe.insertRow({ 1, 20, 100 });
 	myDataframe.insertRow({ 2, 21, 200 });

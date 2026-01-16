@@ -2,8 +2,8 @@
 #include <iostream>
 #include <algorithm>
 
-void CDataFrame::addColumn(std::string columnTitle) {
-    columns.push_back(std::make_shared<Column>(columnTitle));
+void CDataFrame::addColumn(std::string columnTitle, ColumnType type) {
+    columns.push_back(std::make_shared<Column>(type, columnTitle));
 }
 
 void CDataFrame::deleteColumn(std::string columnTitle) {
@@ -21,7 +21,7 @@ size_t CDataFrame::getColumnsCount() const {
     return columns.size();
 }
 
-bool CDataFrame::insertRow(const std::vector<int> &values) {
+bool CDataFrame::insertRow(const std::vector<ColumnValue>& values) {
     if (values.size() != columns.size()) {
         return false;
     }
@@ -53,7 +53,7 @@ void CDataFrame::print() const {
     size_t rows = getRowsCount();
     for (size_t i = 0; i < rows; ++i) {
         for (const auto& col : columns) {
-            std::cout << col->getValueAt(i) << "\t";
+            std::cout << col->valueToString(i) << "\t";
         }
         std::cout << std::endl;
     }
@@ -84,7 +84,7 @@ void CDataFrame::printRows(size_t startRow, size_t endRow) const {
 
     for (size_t i = startRow; i < endRow; ++i) {
         for (const auto& col : columns) {
-            std::cout << col->getValueAt(i) << "\t";
+            std::cout << col->valueToString(i) << "\t";
         }
         std::cout << std::endl;
     }
@@ -104,7 +104,7 @@ void CDataFrame::printColumns(size_t startCol, size_t endCol) const {
     size_t rows = getRowsCount();
     for (size_t r = 0; r < rows; ++r) {
         for (size_t c = startCol; c < endCol; ++c) {
-            std::cout << columns[c]->getValueAt(r) << "\t";
+            std::cout << columns[c]->valueToString(r) << "\t";
         }
         std::cout << std::endl;
     }
@@ -130,24 +130,24 @@ void CDataFrame::renameColumn(const std::string& oldName, const std::string& new
     std::cout << "Column " << oldName << " not found." << std::endl;
 }
 
-bool CDataFrame::valueExists(int value) const {
+bool CDataFrame::valueExists(const ColumnValue& value) const {
     for (const auto& col : columns) {
         if (col->valueCount(value) > 0) return true;
     }
     return false;
 }
 
-int CDataFrame::getValue(size_t rowIndex, size_t colIndex) const {
+const ColumnValue& CDataFrame::getValue(size_t rowIndex, size_t colIndex) const {
     if (colIndex >= columns.size()) throw std::out_of_range("Column index out of range");
-    return columns[colIndex]->getValueAt(rowIndex);
+    return columns[colIndex]->getValueAt(static_cast<int>(rowIndex));
 }
 
-void CDataFrame::replaceValue(size_t rowIndex, size_t colIndex, int newValue) {
+void CDataFrame::replaceValue(size_t rowIndex, size_t colIndex, const ColumnValue& newValue) {
     if (colIndex >= columns.size()) throw std::out_of_range("Column index out of range");
-    columns[colIndex]->setValueAt(rowIndex, newValue);
+    columns[colIndex]->setValueAt(static_cast<int>(rowIndex), newValue);
 }
 
-size_t CDataFrame::countValuesEqualTo(int value) const {
+size_t CDataFrame::countValuesEqualTo(const ColumnValue& value) const {
     size_t total = 0;
     for (const auto& col : columns) {
         total += col->countValuesEqualTo(value);
@@ -155,7 +155,7 @@ size_t CDataFrame::countValuesEqualTo(int value) const {
     return total;
 }
 
-size_t CDataFrame::countValuesGreaterThan(int value) const {
+size_t CDataFrame::countValuesGreaterThan(const ColumnValue& value) const {
     size_t total = 0;
     for (const auto& col : columns) {
         total += col->countValuesGreaterThan(value);
@@ -163,7 +163,7 @@ size_t CDataFrame::countValuesGreaterThan(int value) const {
     return total;
 }
 
-size_t CDataFrame::countValuesLessThan(int value) const {
+size_t CDataFrame::countValuesLessThan(const ColumnValue& value) const {
     size_t total = 0;
     for (const auto& col : columns) {
         total += col->countValuesLessThan(value);
@@ -171,26 +171,26 @@ size_t CDataFrame::countValuesLessThan(int value) const {
     return total;
 }
 
-void CDataFrame::fillDataFrame(const std::vector<std::vector<int>>& data) {
+void CDataFrame::fillDataFrame(const std::vector<std::vector<ColumnValue>>& data) {
     for (const auto& row : data) {
         insertRow(row);
     }
 }
 
-void CDataFrame::fillDataFrame() {
-    int nbRows;
-    std::cout << "How many rows do you want to add? ";
-    std::cin >> nbRows;
-
-    for (int i = 0; i < nbRows; ++i) {
-        std::vector<int> rowValues;
-        std::cout << "Row " << i << " : " << std::endl;
-        for (const auto& col : columns) {
-            int val;
-            std::cout << "Value for " << col->getName() << ": ";
-            std::cin >> val;
-            rowValues.push_back(val);
-        }
-        insertRow(rowValues);
-    }
-}
+//void CDataFrame::fillDataFrame() {
+//    int nbRows;
+//    std::cout << "How many rows do you want to add? ";
+//    std::cin >> nbRows;
+//
+//    for (int i = 0; i < nbRows; ++i) {
+//        std::vector<int> rowValues;
+//        std::cout << "Row " << i << " : " << std::endl;
+//        for (const auto& col : columns) {
+//            int val;
+//            std::cout << "Value for " << col->getName() << ": ";
+//            std::cin >> val;
+//            rowValues.push_back(val);
+//        }
+//        insertRow(rowValues);
+//    }
+//}
