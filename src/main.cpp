@@ -5,13 +5,14 @@
 void test_column_class();
 void test_dataframe_class();
 void test_part2_multitype();
-
+void test_section6_tri();
 
 
 int main() {
 	test_column_class();
 	test_dataframe_class();
 	test_part2_multitype();
+	test_section6_tri();
 	return 0;
 }
 
@@ -96,4 +97,35 @@ void test_dataframe_class() {
 	std::cout << "--- Statistiques ---" << std::endl;
 	std::cout << "Valeurs > 150 : " << myDataframe.countValuesGreaterThan(150) << std::endl;
 	std::cout << "Valeurs == 200 : " << myDataframe.countValuesEqualTo(200) << std::endl;
+}
+
+void test_section6_tri() {
+	std::cout << "\n\n=== TEST SECTION 6 : TRI ===" << std::endl;
+
+	Column col(ColumnType::INT, "Valeurs");
+	col.insertValue(52);
+	col.insertValue(44);
+	col.insertValue(15);
+	col.insertValue(18);
+
+	std::cout << "--- Colonne avant tri ---" << std::endl;
+	col.print();
+
+	std::cout << "--- Tri croissant ---" << std::endl;
+	col.sort(true);
+	col.printSorted(true);
+
+	std::cout << "--- Tri decroissant ---" << std::endl;
+	col.sort(false);
+	col.printSorted(false);
+
+	int searchVal = 40;
+	int result = col.searchValue(searchVal);
+	if (result == 1) {
+		std::cout << "Valeur " << searchVal << " trouvee dans la colonne" << std::endl;
+	} else if (result == 0) {
+		std::cout << "Valeur " << searchVal << " non trouvee dans la colonne" << std::endl;
+	} else {
+		std::cout << "Colonne non triee, recherche impossible" << std::endl;
+	}
 }
