@@ -141,23 +141,6 @@ ColumnValue inputValueForType(ColumnType type) {
     }
 }
 
-std::string columnTypeToString(ColumnType type) {
-    switch (type) {
-        case ColumnType::NULLVAL: return "NULL";
-        case ColumnType::UINT: return "UINT";
-        case ColumnType::INT: return "INT";
-        case ColumnType::USHORT: return "USHORT";
-        case ColumnType::SHORT: return "SHORT";
-        case ColumnType::ULONG: return "ULONG";
-        case ColumnType::LONG: return "LONG";
-        case ColumnType::UCHAR: return "UCHAR";
-        case ColumnType::CHAR: return "CHAR";
-        case ColumnType::FLOAT: return "FLOAT";
-        case ColumnType::DOUBLE: return "DOUBLE";
-        case ColumnType::STRING: return "STRING";
-        default: return "UNKNOWN";
-    }
-}
 
 // ==================== MENUS ====================
 

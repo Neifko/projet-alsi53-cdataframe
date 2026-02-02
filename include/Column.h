@@ -9,6 +9,13 @@
 #include "ColumnValue.h"
 
 /**
+ * @brief Convert a ColumnType to its string representation
+ * @param type The column type
+ * @return String representation of the type
+ */
+std::string columnTypeToString(ColumnType type);
+
+/**
  * @brief Compare two ColumnValue variants robustly
  * @param a First value
  * @param b Second value

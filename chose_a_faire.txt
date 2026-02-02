@@ -1,6 +1,6 @@
 Opérateurs utiles absents : surcharge operator[](size_t) / operator[](const std::string&) et operator<< pour affichage.
 
-Méthode automatique d’inférence de types pour CSV (loadFromCSVAuto) non implémentée.
+Méthode automatique d'inférence de types pour CSV (loadFromCSVAuto) non implémentée.
 
 loadFromCSV et saveToCSV (et fonctions utilitaires parseLine / parseDataLine) non implémentées.
 
@@ -17,12 +17,12 @@ Fonctions utilitaires recommandées par le sujet (parseurs CSV, utils de compara
 Etat actuel (rapide) :
 - Plusieurs méthodes de CDataFrame et Column sont déjà implémentées :
   - CDataFrame: constructor(types), addColumn, deleteColumn, insertRow, deleteRow, renameColumn,
-    setColumnNames, getColumnsCount, getRowsCount, print, info, printRows, printColumns,
+    setColumnNames, getColumnsCount, getRowsCount, print, info (avec types des colonnes), printRows, printColumns,
     printHead, printTail, printHeader, fillDataFrame(overload), sort.
   - Column: constructors, insertValue, print, valueToString, valueCount, getValueAt,
     countValuesGreaterThan, countValuesLessThan, countValuesEqualTo, setName, setValueAt,
     deleteValueAt, getSize, sort, printSorted, eraseIndex, checkIndex, updateIndex, searchValue,
-    applyFunction templates.
+    applyFunction templates, getType, columnTypeToString (fonction utilitaire).
   - Test coverage: many features have unit-like tests in src/main.cpp (including new test_additional_methods).
 
 A faire / Problèmes connus (à corriger ou implémenter) :
@@ -82,5 +82,6 @@ A faire / Problèmes connus (à corriger ou implémenter) :
 
 Notes / Priorités recommandées :
 fait - Priorité haute : (1) initialiser validIndex/sortAscending, (2) vérifier types à l'insertion, (3) compareValues robuste, (4) corriger searchValue et updateIndex.
+fait - info() affiche maintenant les types des colonnes en plus des noms.
 - Priorité moyenne : CSV I/O complet + parse utils, operator[] et operator<<, tests d'import/export.
 - Priorité basse / optionnel : support std::any/OBJECT, refactor smart pointers, améliorations UI d'affichage.

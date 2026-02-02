@@ -105,6 +105,12 @@ void CDataFrame::info() const {
         std::cout << col->getName() << ",  ";
     }
     std::cout << std::endl;
+
+    std::cout << "Column types:      ";
+    for (const auto& col : columns) {
+        std::cout << columnTypeToString(col->getType()) << ",  ";
+    }
+    std::cout << std::endl;
 }
 
 void CDataFrame::printRows(size_t startRow, size_t endRow) const {
