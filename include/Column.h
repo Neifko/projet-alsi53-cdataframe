@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <memory>
 
 #include "ColumnValue.h"
 
@@ -16,7 +17,6 @@ private:
     bool sortAscending;
 
 public :
-
     /**
     * Create a column with a given  type
     * @param type : type of the column
@@ -35,7 +35,7 @@ public :
     * @param value : value to add
     * @return : true if the value was added, false otherwise
     */
-    bool insertValue(const ColumnValue& value);
+    bool insertValue(const ColumnValue &value);
 
     /**
     * Print a column content show the index and the value
@@ -54,35 +54,35 @@ public :
      * @param value : value to search
      * @return : number of occurrences
      */
-    int valueCount(const ColumnValue& value) const;
+    int valueCount(const ColumnValue &value) const;
 
     /**
      * Return the value at a given index
      * @param index : index of the value
      * @return : value at the index
      */
-    const ColumnValue& getValueAt(int index) const;
+    const ColumnValue &getValueAt(int index) const;
 
     /**
      *Return the number of value superior to a given value
      * @param value : value to compare
      * @return : number of value superior to the given value
      */
-    int countValuesGreaterThan(const ColumnValue& value) const;
+    int countValuesGreaterThan(const ColumnValue &value) const;
 
     /**
      *Return the number of value inferior to a given value
      * @param value : value to compare
      * @return : number of value inferior to the given value
      */
-    int countValuesLessThan(const ColumnValue& value) const;
+    int countValuesLessThan(const ColumnValue &value) const;
 
     /**
      *Return the number of values equal to a given value
      * @param value : value to compare
      * @return : number of values equal to the given value
      */
-    int countValuesEqualTo(const ColumnValue& value) const;
+    int countValuesEqualTo(const ColumnValue &value) const;
 
     /**
      * Get the name of the column
@@ -100,14 +100,14 @@ public :
      * @brief Rename the column
      * @param newTitle : The new title
      */
-    void setName(const std::string& newTitle);
+    void setName(const std::string &newTitle);
 
     /**
      * @brief Replace value at a specific index
      * @param index : index to replace
      * @param newValue : the new value
      */
-    void setValueAt(int index, const ColumnValue& newValue);
+    void setValueAt(int index, const ColumnValue &newValue);
 
     /**
      * @brief Delete value at a specific index
@@ -157,49 +157,30 @@ public :
     0: value not found
     1: value found
     */
-    template<typename T>
-    int searchValue(const T& val) const;
+    int searchValue(const ColumnValue &val) const;
+
+    /**
+    * @brief : Apply a function to all elements of a column
+    * @param func : Function to apply (lambda or function pointer)
+    * @return : Result of the operation
+    */
+    template<typename Func, typename ResultType>
+    ResultType applyFunction(Func func);
+
+    /**
+    * @brief : Apply a function on 2 columns to create a 3rd
+    * @param col1 : First column
+    * @param col2 : Second column
+    * @param func : Function to apply
+    * @return : Pointer to the new column created
+    */
+    template<typename Func>
+    static std::unique_ptr<Column> applyFunction(
+        const Column &col1,
+        const Column &col2,
+        ColumnType resultType,
+        Func func
+    );
 };
-
-/**
-* @brief: Test if a value exists in a column
-* @param val: The value to search for
-* @return: -1: column not sorted,
-0: value not found
-1: value found
-*/
-template<typename T>
-int Column::searchValue(const T& val) const {
-    if (!validIndex || index.empty()) {
-        return -1;
-    }
-    auto it = std::lower_bound(index.begin(), index.end(), val,
-        [this](size_t idx, const T& searchVal) {
-            const auto& element = data[idx];
-            return std::visit([&searchVal, this](auto&& arg) -> bool {
-                using U = std::decay_t<decltype(arg)>;
-                if constexpr (std::is_same_v<U, T>) {
-                    return sortAscending ? (arg < searchVal) : (arg > searchVal);
-                }
-                return false;
-            }, element);
-        });
-    if (it != index.end()) {
-        const auto& candidate = data[*it];
-        bool found = std::visit([&val](auto&& arg) -> bool {
-            using U = std::decay_t<decltype(arg)>;
-            if constexpr (std::is_same_v<U, T>) {
-                return arg == val;
-            }
-            return false;
-        }, candidate);
-
-        if (found) {
-            return 1;
-        }
-    }
-
-    return 0;
-}
 
 #endif //PROJET_ALSI53_CDATAFRAME_COLUMN_H
