@@ -2,6 +2,7 @@
 #define PROJET_ALSI53_CDATAFRAME_COLUMN_H
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "ColumnValue.h"
 
@@ -159,5 +160,46 @@ public :
     template<typename T>
     int searchValue(const T& val) const;
 };
+
+/**
+* @brief: Test if a value exists in a column
+* @param val: The value to search for
+* @return: -1: column not sorted,
+0: value not found
+1: value found
+*/
+template<typename T>
+int Column::searchValue(const T& val) const {
+    if (!validIndex || index.empty()) {
+        return -1;
+    }
+    auto it = std::lower_bound(index.begin(), index.end(), val,
+        [this](size_t idx, const T& searchVal) {
+            const auto& element = data[idx];
+            return std::visit([&searchVal, this](auto&& arg) -> bool {
+                using U = std::decay_t<decltype(arg)>;
+                if constexpr (std::is_same_v<U, T>) {
+                    return sortAscending ? (arg < searchVal) : (arg > searchVal);
+                }
+                return false;
+            }, element);
+        });
+    if (it != index.end()) {
+        const auto& candidate = data[*it];
+        bool found = std::visit([&val](auto&& arg) -> bool {
+            using U = std::decay_t<decltype(arg)>;
+            if constexpr (std::is_same_v<U, T>) {
+                return arg == val;
+            }
+            return false;
+        }, candidate);
+
+        if (found) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
 
 #endif //PROJET_ALSI53_CDATAFRAME_COLUMN_H

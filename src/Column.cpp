@@ -1,5 +1,7 @@
 #include "Column.h"
 #include <iostream>
+#include <numeric>
+#include <algorithm>
 
 
 Column::Column(ColumnType type) : columnType(type) {
@@ -107,4 +109,51 @@ void Column::deleteValueAt(size_t index) {
 
 size_t Column::getSize() const {
 	return data.size();
+}
+
+void Column::sort(bool ascending) {
+	if (index.size() != data.size()) {
+		index.resize(data.size());
+		std::iota(index.begin(), index.end(), 0);
+	}
+	std::sort(index.begin(), index.end(),
+		[this, ascending](size_t a, size_t b) {
+			if (ascending) {
+				return data[a] < data[b];
+			} else {
+				return data[a] > data[b];
+			}
+		});
+	validIndex = true;
+	sortAscending = ascending;
+}
+
+void Column::printSorted(bool ascending) {
+	if (!validIndex || sortAscending != ascending) {
+		sort(ascending);
+	}
+	for (size_t i = 0; i < index.size(); ++i) {
+		std::cout << "[" << index[i] << "] " << valueToString(index[i]) << std::endl;
+	}
+}
+
+void Column::eraseIndex() {
+	index.clear();
+	validIndex = false;
+}
+
+int Column::checkIndex() const {
+	if (index.empty()) {
+		return -1;
+	}
+	if (!validIndex) {
+		return 0;
+	}
+	return 1;
+}
+
+void Column::updateIndex() {
+	if (!index.empty()) {
+		sort(sortAscending);
+	}
 }
