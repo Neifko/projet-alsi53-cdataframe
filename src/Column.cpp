@@ -157,3 +157,27 @@ void Column::updateIndex() {
 		sort(sortAscending);
 	}
 }
+
+int Column::searchValue(const ColumnValue &val) const {
+	if (!validIndex || index.empty()) {
+		return -1;
+	}
+
+	auto it = std::lower_bound(index.begin(), index.end(), val,
+		[this](size_t idx, const ColumnValue &searchVal) {
+			const auto &element = data[idx];
+			if (element.index() != searchVal.index()) {
+				return false;
+			}
+			return sortAscending ? (element < searchVal) : (element > searchVal);
+		});
+
+	if (it != index.end()) {
+		const auto &candidate = data[*it];
+		if (candidate == val) {
+			return 1;
+		}
+	}
+
+	return 0;
+}
