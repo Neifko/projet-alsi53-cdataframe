@@ -87,15 +87,17 @@ public:
     /**
     * @brief Delete a column by name
     * @param columnTitle : Column name
+    * @return true if column was found and deleted, false otherwise
     */
-    void deleteColumn(std::string columnTitle);
+    bool deleteColumn(std::string columnTitle);
 
     /**
-     *Rename the title of a column
+     * Rename the title of a column
      * @param oldName : current name of the column
      * @param newName : new name of the column
+     * @return true if column was found and renamed, false otherwise
      */
-    void renameColumn(const std::string &oldName, const std::string &newName);
+    bool renameColumn(const std::string &oldName, const std::string &newName);
 
     /**
     * @brief Set column names

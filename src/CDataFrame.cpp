@@ -14,7 +14,8 @@ void CDataFrame::addColumn(std::string columnTitle, ColumnType type) {
     columns.push_back(std::make_shared<Column>(type, columnTitle));
 }
 
-void CDataFrame::deleteColumn(std::string columnTitle) {
+bool CDataFrame::deleteColumn(std::string columnTitle) {
+    size_t initialSize = columns.size();
     auto it = std::remove_if(columns.begin(), columns.end(),
                              [&columnTitle](const std::shared_ptr<Column>& col) {
                                  return col->getName() == columnTitle;
@@ -22,7 +23,9 @@ void CDataFrame::deleteColumn(std::string columnTitle) {
 
     if (it != columns.end()) {
         columns.erase(it, columns.end());
+        return true; // Colonne trouvee et supprimee
     }
+    return false; // Colonne non trouvee
 }
 
 size_t CDataFrame::getColumnsCount() const {
@@ -153,14 +156,14 @@ void CDataFrame::deleteRow(size_t rowIndex) {
     }
 }
 
-void CDataFrame::renameColumn(const std::string& oldName, const std::string& newName) {
+bool CDataFrame::renameColumn(const std::string& oldName, const std::string& newName) {
     for (auto& col : columns) {
         if (col->getName() == oldName) {
             col->setName(newName);
-            return;
+            return true; // Colonne trouvee et renommee
         }
     }
-    std::cout << "Column " << oldName << " not found." << std::endl;
+    return false; // Colonne non trouvee
 }
 
 bool CDataFrame::valueExists(const ColumnValue& value) const {

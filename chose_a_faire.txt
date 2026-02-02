@@ -11,7 +11,6 @@ Affichages utilitaires
 
 Support "OBJECT" / std::any mentionné dans le sujet absent : ColumnType et ColumnValue ne contiennent pas OBJECT / std::any.
 
-Pas de vérification stricte du type lors d’insertion de lignes/valeurs non conformes au ColumnType manquante.
 
 Fonctions utilitaires recommandées par le sujet (parseurs CSV, utils de comparaison, helpers) absentes.
 
@@ -28,7 +27,6 @@ Etat actuel (rapide) :
 
 A faire / Problèmes connus (à corriger ou implémenter) :
 1) Initialisation et invariants
-   - Initialise validIndex et sortAscending dans les constructeurs de Column (actuellement non initialisés).
    - Après insertion de valeurs, marquer l'index invalide (validIndex = false) si existant.
 
 2) Vérification stricte des types
@@ -83,6 +81,6 @@ A faire / Problèmes connus (à corriger ou implémenter) :
    - Considérer l'ajout d'une structure d'index par nom pour accès rapide aux colonnes (unordered_map<string,size_t>).
 
 Notes / Priorités recommandées :
-- Priorité haute : (1) initialiser validIndex/sortAscending, (2) vérifier types à l'insertion, (3) compareValues robuste, (4) corriger searchValue et updateIndex.
+fait - Priorité haute : (1) initialiser validIndex/sortAscending, (2) vérifier types à l'insertion, (3) compareValues robuste, (4) corriger searchValue et updateIndex.
 - Priorité moyenne : CSV I/O complet + parse utils, operator[] et operator<<, tests d'import/export.
 - Priorité basse / optionnel : support std::any/OBJECT, refactor smart pointers, améliorations UI d'affichage.
