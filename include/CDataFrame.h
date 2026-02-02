@@ -172,6 +172,18 @@ public:
     * @param ascending Sort direction
     */
     void sort(const std::string& colName, bool ascending = true);
+
+    /**
+    * @brief Clear all data from the dataframe (removes all columns and rows)
+    */
+    void clear();
+
+    /**
+    * @brief Get the column name at a given index
+    * @param colIndex : column index
+    * @return : column name
+    */
+    std::string getColumnName(size_t colIndex) const;
 };
 
 

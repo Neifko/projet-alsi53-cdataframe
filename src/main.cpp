@@ -177,10 +177,11 @@ void menuAlimentation(CDataFrame& df, std::vector<ColumnType>& columnTypes) {
         std::cout << "|  1. Ajouter une colonne                  |\n";
         std::cout << "|  2. Inserer une ou plusieurs lignes      |\n";
         std::cout << "|  3. Charger donnees exemple              |\n";
+        std::cout << "|  4. Vider le dataframe                   |\n";
         std::cout << "|  0. Retour au menu principal             |\n";
         std::cout << "+------------------------------------------+\n";
 
-        choix = getIntInputInRange("Votre choix (0-3): ", 0, 3);
+        choix = getIntInputInRange("Votre choix (0-4): ", 0, 4);
 
         switch (choix) {
             case 1: {
@@ -202,7 +203,8 @@ void menuAlimentation(CDataFrame& df, std::vector<ColumnType>& columnTypes) {
                     std::cout << "\n--- Ligne " << (ligne + 1) << "/" << nbLignes << " ---\n";
                     std::vector<ColumnValue> row;
                     for (size_t i = 0; i < columnTypes.size(); ++i) {
-                        std::cout << "  Colonne '" << i << "' (" << columnTypeToString(columnTypes[i]) << "): ";
+                        std::string colName = df.getColumnName(i);
+                        std::cout << "  Colonne '" << colName << "' (" << columnTypeToString(columnTypes[i]) << "): ";
                         row.push_back(inputValueForType(columnTypes[i]));
                     }
                     if (df.insertRow(row)) {
@@ -231,6 +233,22 @@ void menuAlimentation(CDataFrame& df, std::vector<ColumnType>& columnTypes) {
                 } else {
                     std::cout << "Le dataframe contient deja des colonnes.\n";
                     std::cout << "Utilisez l'option 2 pour ajouter des lignes.\n";
+                }
+                break;
+            }
+            case 4: {
+                if (df.getColumnsCount() == 0 && df.getRowsCount() == 0) {
+                    std::cout << "Le dataframe est deja vide.\n";
+                } else {
+                    std::cout << "Etes-vous sur de vouloir vider le dataframe? (o/n): ";
+                    std::string confirmation = getStringInput("");
+                    if (confirmation == "o" || confirmation == "O" || confirmation == "oui" || confirmation == "OUI") {
+                        df.clear();
+                        columnTypes.clear();
+                        std::cout << "Dataframe vide avec succes.\n";
+                    } else {
+                        std::cout << "Operation annulee.\n";
+                    }
                 }
                 break;
             }

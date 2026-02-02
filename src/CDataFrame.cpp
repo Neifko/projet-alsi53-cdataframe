@@ -343,3 +343,15 @@ void CDataFrame::printHeader() const {
     }
     std::cout << std::endl;
 }
+
+void CDataFrame::clear() {
+    columns.clear();
+}
+
+std::string CDataFrame::getColumnName(size_t colIndex) const {
+    if (colIndex >= columns.size()) {
+        throw std::out_of_range("Column index out of range");
+    }
+    return columns[colIndex]->getName();
+}
+
