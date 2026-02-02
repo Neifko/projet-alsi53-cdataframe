@@ -116,16 +116,34 @@ void Column::sort(bool ascending) {
 		index.resize(data.size());
 		std::iota(index.begin(), index.end(), 0);
 	}
-	std::sort(index.begin(), index.end(),
+	std::stable_sort(index.begin(), index.end(),
 		[this, ascending](size_t a, size_t b) {
-			if (ascending) {
-				return data[a] < data[b];
-			} else {
-				return data[a] > data[b];
+			const auto& valA = data[a];
+			const auto& valB = data[b];
+
+			if (valA.index() != valB.index()) {
+				return valA.index() < valB.index();
 			}
-		});
+			return std::visit([&](auto&& argA, auto&& argB) -> bool {
+					using T = std::decay_t<decltype(argA)>;
+					if constexpr (std::is_same_v<std::decay_t<decltype(argB)>, T>) {
+						 return ascending ? (argA < argB) : (argA > argB);
+					}
+					return false;
+				}, valA, valB);
+			});
+
 	validIndex = true;
 	sortAscending = ascending;
+}
+
+const std::vector<size_t>& Column::getIndex() const {
+	return index;
+}
+
+void Column::setIndex(const std::vector<size_t>& newIndex) {
+	index = newIndex;
+	validIndex = true;
 }
 
 void Column::printSorted(bool ascending) {

@@ -181,6 +181,16 @@ public :
         ColumnType resultType,
         Func func
     );
+
+    /**
+    * @brief Get the index vector
+    */
+    const std::vector<size_t>& getIndex() const;
+
+    /**
+    * @brief Set the index vector manually
+    */
+    void setIndex(const std::vector<size_t>& newIndex);
 };
 
 template<typename Func, typename ResultType>
