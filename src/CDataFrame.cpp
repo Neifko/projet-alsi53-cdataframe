@@ -34,6 +34,27 @@ bool CDataFrame::insertRow(const std::vector<ColumnValue>& values) {
         return false;
     }
 
+    // Verify type compatibility for each value
+    for (size_t i = 0; i < columns.size(); ++i) {
+        if (!isValueCompatibleWithType(values[i], columns[i]->getType())) {
+            // Allow numeric-to-numeric implicit conversion
+            bool valueIsNumeric = std::visit([](auto&& arg) -> bool {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (std::is_same_v<T, std::monostate> || std::is_same_v<T, std::string>) {
+                    return false;
+                }
+                return std::is_arithmetic_v<T>;
+            }, values[i]);
+
+            ColumnType colType = columns[i]->getType();
+            bool typeIsNumeric = (colType >= ColumnType::UINT && colType <= ColumnType::DOUBLE);
+
+            if (!(valueIsNumeric && typeIsNumeric)) {
+                return false; // Type mismatch
+            }
+        }
+    }
+
     for (size_t i = 0; i < columns.size(); ++i) {
         columns[i]->insertValue(values[i]);
     }

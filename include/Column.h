@@ -4,8 +4,29 @@
 #include <vector>
 #include <algorithm>
 #include <memory>
+#include <stdexcept>
 
 #include "ColumnValue.h"
+
+/**
+ * @brief Compare two ColumnValue variants robustly
+ * @param a First value
+ * @param b Second value
+ * @return -1 if a < b, 0 if a == b, 1 if a > b
+ * @note monostate (NULL) is considered less than any other value
+ * @note Numeric types are compared with implicit conversion
+ * @note Strings are compared lexicographically only with strings
+ * @note Mixed non-numeric types compare by variant index for stable ordering
+ */
+int compareValues(const ColumnValue& a, const ColumnValue& b);
+
+/**
+ * @brief Check if a ColumnValue matches the expected ColumnType
+ * @param value The value to check
+ * @param expectedType The expected column type
+ * @return true if compatible, false otherwise
+ */
+bool isValueCompatibleWithType(const ColumnValue& value, ColumnType expectedType);
 
 class Column {
 private:
@@ -13,8 +34,8 @@ private:
     ColumnType columnType;
     std::vector<ColumnValue> data;
     std::vector<size_t> index;
-    bool validIndex;
-    bool sortAscending;
+    bool validIndex = false;      // Initialized
+    bool sortAscending = true;    // Initialized
 
 public :
     /**
@@ -191,6 +212,12 @@ public :
     * @brief Set the index vector manually
     */
     void setIndex(const std::vector<size_t>& newIndex);
+
+    /**
+     * @brief Get the column type
+     * @return The column type
+     */
+    ColumnType getType() const;
 };
 
 template<typename Func, typename ResultType>
