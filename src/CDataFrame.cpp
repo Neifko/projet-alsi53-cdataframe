@@ -2,6 +2,14 @@
 #include <iostream>
 #include <algorithm>
 
+// Add constructor: create columns from vector of types with default names col0, col1, ...
+CDataFrame::CDataFrame(const std::vector<ColumnType> &types) {
+    columns.reserve(types.size());
+    for (size_t i = 0; i < types.size(); ++i) {
+        columns.push_back(std::make_shared<Column>(types[i], "col" + std::to_string(i)));
+    }
+}
+
 void CDataFrame::addColumn(std::string columnTitle, ColumnType type) {
     columns.push_back(std::make_shared<Column>(type, columnTitle));
 }
@@ -193,4 +201,80 @@ void CDataFrame::fillDataFrame() {
         }
         insertRow(rowValues);
     }
+}
+
+// Add setColumnNames: set titles if sizes match
+void CDataFrame::setColumnNames(const std::vector<std::string>& names) {
+    if (names.size() != columns.size()) {
+        std::cout << "Warning: number of names (" << names.size()
+                  << ") does not match number of columns (" << columns.size() << ")." << std::endl;
+        return;
+    }
+    for (size_t i = 0; i < columns.size(); ++i) {
+        columns[i]->setName(names[i]);
+    }
+}
+
+// Add printHead: show up to first 10 rows
+void CDataFrame::printHead() const {
+    if (columns.empty()) {
+        std::cout << "Empty DataFrame" << std::endl;
+        return;
+    }
+
+    size_t rows = getRowsCount();
+    size_t toShow = std::min<size_t>(10, rows);
+
+    for (const auto& col : columns) {
+        std::cout << col->getName() << "\t";
+    }
+    std::cout << std::endl;
+
+    for (size_t r = 0; r < toShow; ++r) {
+        for (const auto& col : columns) {
+            std::cout << col->valueToString(r) << "\t";
+        }
+        std::cout << std::endl;
+    }
+}
+
+// Add printTail: show up to last 10 rows
+void CDataFrame::printTail() const {
+    if (columns.empty()) {
+        std::cout << "Empty DataFrame" << std::endl;
+        return;
+    }
+
+    size_t rows = getRowsCount();
+    if (rows == 0) {
+        std::cout << "Empty DataFrame (no rows)" << std::endl;
+        return;
+    }
+
+    size_t toShow = std::min<size_t>(10, rows);
+    size_t start = rows - toShow;
+
+    for (const auto& col : columns) {
+        std::cout << col->getName() << "\t";
+    }
+    std::cout << std::endl;
+
+    for (size_t r = start; r < rows; ++r) {
+        for (const auto& col : columns) {
+            std::cout << col->valueToString(r) << "\t";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void CDataFrame::printHeader() const {
+    if (columns.empty()) {
+        std::cout << "Empty DataFrame" << std::endl;
+        return;
+    }
+
+    for (const auto& col : columns) {
+        std::cout << col->getName() << "\t";
+    }
+    std::cout << std::endl;
 }

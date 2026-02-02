@@ -36,6 +36,11 @@ public:
     void print() const;
 
     /**
+    * @brief Display only the dataframe header (column names)
+    */
+    void printHeader() const;
+
+    /**
     * @brief Display the first 10 rows of the dataframe
     */
     void printHead() const;

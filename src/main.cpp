@@ -1,6 +1,8 @@
 #include <iostream>
 #include "Column.h"
 #include "CDataFrame.h"
+#include <type_traits>
+#include <string>
 
 void test_column_class();
 
@@ -12,6 +14,8 @@ void test_section6_tri();
 
 void test_applyFunction_columns();
 
+void test_additional_methods();
+
 
 int main() {
     test_column_class();
@@ -19,6 +23,9 @@ int main() {
     test_part2_multitype();
     test_section6_tri();
     test_applyFunction_columns();
+
+    // Added additional tests for methods not previously exercised
+    test_additional_methods();
 
     return 0;
 }
@@ -207,4 +214,96 @@ void test_applyFunction_columns() {
     if (colCompare) {
         colCompare->print();
     }
+}
+
+// New: helper to convert ColumnValue -> string (used in tests)
+static auto columnValueToString = [](const ColumnValue& v) -> std::string {
+    return std::visit([](auto&& arg) -> std::string {
+        using T = std::decay_t<decltype(arg)>;
+        if constexpr (std::is_same_v<T, std::monostate>) {
+            return "NULL";
+        } else if constexpr (std::is_same_v<T, std::string>) {
+            return arg;
+        } else {
+            return std::to_string(arg);
+        }
+    }, v);
+};
+
+// New: tests for DataFrame and Column methods not covered previously
+void test_additional_methods() {
+    std::cout << "\n\n=== TEST ADDITIONAL DF/COLUMN METHODS ===" << std::endl;
+
+    CDataFrame df;
+    df.addColumn("A", ColumnType::INT);
+    df.addColumn("B", ColumnType::FLOAT);
+    df.addColumn("C", ColumnType::STRING);
+
+    df.insertRow({1, 2.5f, std::string("x")});
+    df.insertRow({2, 3.5f, std::string("y")});
+    df.insertRow({3, 1.5f, std::string("z")});
+
+    std::cout << "\n--- printHeader ---" << std::endl;
+    df.printHeader();
+
+    std::cout << "\n--- printHead ---" << std::endl;
+    df.printHead();
+
+    std::cout << "\n--- printTail ---" << std::endl;
+    df.printTail();
+
+    std::cout << "\n--- printRows(1,3) ---" << std::endl;
+    df.printRows(1, 3); // prints rows 1 and 2
+
+    std::cout << "\n--- printColumns(1,3) ---" << std::endl;
+    df.printColumns(1, 3); // prints columns B and C
+
+    std::cout << "\n--- setColumnNames(mismatch) ---" << std::endl;
+    df.setColumnNames({"X", "Y"}); // should warn
+
+    std::cout << "\n--- setColumnNames(correct) ---" << std::endl;
+    df.setColumnNames({"ID", "Val", "Name"});
+    df.printHeader();
+
+    std::cout << "\n--- deleteColumn('Val') ---" << std::endl;
+    df.deleteColumn("Val");
+    df.printHeader();
+    df.print();
+
+    std::cout << "\n--- valueExists(2) and valueExists(99) ---" << std::endl;
+    std::cout << std::boolalpha
+              << "exists 2: " << df.valueExists(2) << ", exists 99: " << df.valueExists(99)
+              << std::noboolalpha << std::endl;
+
+    std::cout << "\n--- getValue(0,1) ---" << std::endl;
+    try {
+        const ColumnValue &cv = df.getValue(0, 1);
+        std::cout << "Value at (0,1): " << columnValueToString(cv) << std::endl;
+    } catch (const std::exception &e) {
+        std::cout << "getValue exception: " << e.what() << std::endl;
+    }
+
+    std::cout << "\n--- countValuesLessThan(3) ---" << std::endl;
+    std::cout << "count < 3: " << df.countValuesLessThan(3) << std::endl;
+
+    // Column-specific extras
+    std::cout << "\n--- Column index/search tests ---" << std::endl;
+    Column col(ColumnType::INT, "Tmp");
+    col.insertValue(5);
+    col.insertValue(1);
+    col.insertValue(3);
+
+    std::cout << "checkIndex (before sort): " << col.checkIndex() << std::endl;
+    col.sort(true);
+    std::cout << "checkIndex (after sort): " << col.checkIndex() << std::endl;
+    std::cout << "searchValue(3): " << col.searchValue(3) << " (1 means found)" << std::endl;
+
+    col.eraseIndex();
+    std::cout << "checkIndex (after eraseIndex): " << col.checkIndex() << std::endl;
+
+    // Insert a value and call updateIndex (no-op if index empty)
+    col.insertValue(2);
+    col.updateIndex();
+    std::cout << "Final column content:" << std::endl;
+    col.print();
 }
