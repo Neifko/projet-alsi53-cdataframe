@@ -1,0 +1,88 @@
+Opérateurs utiles absents : surcharge operator[](size_t) / operator[](const std::string&) et operator<< pour affichage.
+
+Méthode automatique d’inférence de types pour CSV (loadFromCSVAuto) non implémentée.
+
+loadFromCSV et saveToCSV (et fonctions utilitaires parseLine / parseDataLine) non implémentées.
+
+printHeader(file) évoquée dans le sujet non présente.
+
+Chargement interactif depuis CSV / export complet absent.
+Affichages utilitaires
+
+Support "OBJECT" / std::any mentionné dans le sujet absent : ColumnType et ColumnValue ne contiennent pas OBJECT / std::any.
+
+Pas de vérification stricte du type lors d’insertion de lignes/valeurs non conformes au ColumnType manquante.
+
+Fonctions utilitaires recommandées par le sujet (parseurs CSV, utils de comparaison, helpers) absentes.
+
+Etat actuel (rapide) :
+- Plusieurs méthodes de CDataFrame et Column sont déjà implémentées :
+  - CDataFrame: constructor(types), addColumn, deleteColumn, insertRow, deleteRow, renameColumn,
+    setColumnNames, getColumnsCount, getRowsCount, print, info, printRows, printColumns,
+    printHead, printTail, printHeader, fillDataFrame(overload), sort.
+  - Column: constructors, insertValue, print, valueToString, valueCount, getValueAt,
+    countValuesGreaterThan, countValuesLessThan, countValuesEqualTo, setName, setValueAt,
+    deleteValueAt, getSize, sort, printSorted, eraseIndex, checkIndex, updateIndex, searchValue,
+    applyFunction templates.
+  - Test coverage: many features have unit-like tests in src/main.cpp (including new test_additional_methods).
+
+A faire / Problèmes connus (à corriger ou implémenter) :
+1) Initialisation et invariants
+   - Initialise validIndex et sortAscending dans les constructeurs de Column (actuellement non initialisés).
+   - Après insertion de valeurs, marquer l'index invalide (validIndex = false) si existant.
+
+2) Vérification stricte des types
+   - Implémenter vérification du ColumnType dans Column::insertValue et CDataFrame::insertRow pour empêcher l'insertion d'un variant d'un autre type que la colonne.
+   - Décider politique pour conversions numériques implicites (autoriser/convertir ou rejeter).
+
+3) Comparaison robuste entre variantes
+   - Remplacer les comparaisons directes entre std::variant par une fonction utilitaire compareValues qui :
+     - Gère les conversions numériques (int/float/double...) de façon sûre,
+     - Compare chaînes uniquement avec chaînes,
+     - Définit un ordre stable pour mixed-type comparisons si nécessaire,
+     - Evite comportement indéfini quand alternatives diffèrent.
+   - Utiliser cette utilitaire dans Column::sort, searchValue, countValuesGreaterThan/..., etc.
+
+4) Recherche binaire / index
+   - Corriger/fiabiliser Column::searchValue : comparator pour lower_bound doit être cohérent avec l'ordre défini par compareValues et tenir compte de sortAscending.
+   - Mettre à jour updateIndex() pour recalculer l'index si invalid (ou fournir une API explicite pour rebuildIndex).
+
+5) CSV I/O et parsing
+   - Implémenter loadFromCSV(filename, types), loadFromCSVAuto(filename) (détecte types), saveToCSV(filename).
+   - Ajouter utilitaires parseLine / parseDataLine pour parser correctement CSV (gestion quotes, types, valeurs NULL).
+   - Ajouter tests d'import/export CSV.
+
+6) API manquante / ergonomie
+   - Implémenter operator[](size_t) et operator[](const std::string&) pour CDataFrame (accès direct aux colonnes).
+   - Surcharger operator<< pour CDataFrame et éventuellement Column (affichage via flux).
+   - Ajouter printHeader(std::ostream&) overload si besoin par la documentation.
+
+7) Support OBJECT / std::any (optionnel)
+   - Si besoin, ajouter ColumnType::OBJECT et std::any dans ColumnValue et gérer sérialisation / comparaison (complexe).
+
+8) Gestion des erreurs / exceptions
+   - Uniformiser les exceptions/messages d'erreur (out_of_range, invalid_argument).
+   - Eviter prints directs dans les méthodes de bibliothèque — préférer retours d'erreur / exceptions et laisser le caller décider de l'affichage.
+
+9) Tests et couverture
+   - Ajouter tests unitaires ciblant :
+     - insertion de types incorrects,
+     - sorts stables et sync multi-colonnes,
+     - searchValue edge-cases,
+     - CSV import/export round-trip,
+     - operator[] et operator<<.
+   - Ajouter cas limites (colonnes vides, lignes incomplètes, valeurs NULL).
+
+10) Documentation
+   - Compléter commentaires Doxygen dans headers (CDataFrame.h, Column.h, ColumnValue.h).
+   - Documenter comportement attendu pour conversions de types et NULL.
+
+11) Petites améliorations / optimisations
+   - Revoir usage de shared_ptr vs unique_ptr pour colonnes (propriété unique du dataframe → unique_ptr possible).
+   - Ajouter parse/format helpers pour normaliser affichage (largeur colonnes, alignement).
+   - Considérer l'ajout d'une structure d'index par nom pour accès rapide aux colonnes (unordered_map<string,size_t>).
+
+Notes / Priorités recommandées :
+- Priorité haute : (1) initialiser validIndex/sortAscending, (2) vérifier types à l'insertion, (3) compareValues robuste, (4) corriger searchValue et updateIndex.
+- Priorité moyenne : CSV I/O complet + parse utils, operator[] et operator<<, tests d'import/export.
+- Priorité basse / optionnel : support std::any/OBJECT, refactor smart pointers, améliorations UI d'affichage.
