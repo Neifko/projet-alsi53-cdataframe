@@ -51,9 +51,13 @@ void CDataFrame::print() const {
     std::cout << std::endl;
 
     size_t rows = getRowsCount();
+    bool isSorted = (columns[0]->checkIndex() == 1);
+    const std::vector<size_t>& idx = columns[0]->getIndex();
+
     for (size_t i = 0; i < rows; ++i) {
+        size_t physicalRow = isSorted ? idx[i] : i;
         for (const auto& col : columns) {
-            std::cout << col->valueToString(i) << "\t";
+            std::cout << col->valueToString(physicalRow) << "\t";
         }
         std::cout << std::endl;
     }
@@ -174,6 +178,36 @@ size_t CDataFrame::countValuesLessThan(const ColumnValue& value) const {
 void CDataFrame::fillDataFrame(const std::vector<std::vector<ColumnValue>>& data) {
     for (const auto& row : data) {
         insertRow(row);
+    }
+}
+
+void CDataFrame::sort(const std::string& colName, bool ascending) {
+    std::shared_ptr<Column> refCol = nullptr;
+    for (auto& col : columns) {
+        if (col->getName() == colName) {
+            refCol = col;
+            break;
+        }
+    }
+
+    if (!refCol) {
+        std::cout << "Column " << colName << " not found" << std::endl;
+        return;
+    }
+
+    if (!columns.empty() && columns[0]->checkIndex() == 1) {
+        if (refCol != columns[0]) {
+            refCol->setIndex(columns[0]->getIndex());
+        }
+    }
+
+    refCol->sort(ascending);
+    const std::vector<size_t>& sortedIndex = refCol->getIndex();
+
+    for (auto& col : columns) {
+        if (col != refCol) {
+            col->setIndex(sortedIndex);
+        }
     }
 }
 

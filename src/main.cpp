@@ -12,6 +12,8 @@ void test_section6_tri();
 
 void test_applyFunction_columns();
 
+void test_dataframe_sorting();
+
 
 int main() {
     test_column_class();
@@ -19,6 +21,7 @@ int main() {
     test_part2_multitype();
     test_section6_tri();
     test_applyFunction_columns();
+    test_dataframe_sorting();
 
     return 0;
 }
@@ -207,4 +210,29 @@ void test_applyFunction_columns() {
     if (colCompare) {
         colCompare->print();
     }
+}
+
+void test_dataframe_sorting() {
+    std::cout << "\n\n=== TEST TRI GLOBAL DATAFRAME ===" << std::endl;
+
+    CDataFrame df;
+    df.addColumn("ID", ColumnType::INT);
+    df.addColumn("Nom", ColumnType::STRING);
+    df.addColumn("Note", ColumnType::FLOAT);
+
+    df.insertRow({ 1, std::string("Charlie"), 12.5f });
+    df.insertRow({ 2, std::string("Alice"), 18.0f }); // Alice avec 18
+    df.insertRow({ 3, std::string("Bob"), 15.0f });
+    df.insertRow({ 4, std::string("Alice"), 10.0f }); // Alice avec 10
+
+    std::cout << "--- Original ---" << std::endl;
+    df.print();
+
+    std::cout << "\n--- Tri par Nom (Croissant) ---" << std::endl;
+    df.sort("Nom", true);
+    df.print();
+
+    std::cout << "\n--- Tri par Note (Decroissant) ---" << std::endl;
+    df.sort("Note", false);
+    df.print();
 }

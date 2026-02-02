@@ -127,6 +127,13 @@ public:
     * @brief Display dataframe information
     */
     void info() const;
+
+    /**
+    * @brief Sort the entire dataframe based on one column
+    * @param colName Name of the column to sort by
+    * @param ascending Sort direction
+    */
+    void sort(const std::string& colName, bool ascending = true);
 };
 
 
