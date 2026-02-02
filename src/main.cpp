@@ -3,31 +3,38 @@
 #include "CDataFrame.h"
 
 void test_column_class();
+
 void test_dataframe_class();
+
 void test_part2_multitype();
+
 void test_section6_tri();
+
+void test_applyFunction_columns();
 
 
 int main() {
-	test_column_class();
-	test_dataframe_class();
-	test_part2_multitype();
-	test_section6_tri();
-	return 0;
+    test_column_class();
+    test_dataframe_class();
+    test_part2_multitype();
+    test_section6_tri();
+    test_applyFunction_columns();
+
+    return 0;
 }
 
 void test_column_class() {
-	Column col(ColumnType::INT);
+    Column col(ColumnType::INT);
 
-	col.insertValue(10);
-	col.insertValue(20);
-	col.insertValue(10);
+    col.insertValue(10);
+    col.insertValue(20);
+    col.insertValue(10);
 
-	col.print();
+    col.print();
 
-	std::cout << "Occurrences de 10: " << col.valueCount(10) << std::endl;
-	std::cout << "Superieurs a 15: " << col.countValuesGreaterThan(15) << std::endl;
-	//int t = col.getValueAt(3); // to test out_of_range exception
+    std::cout << "Occurrences de 10: " << col.valueCount(10) << std::endl;
+    std::cout << "Superieurs a 15: " << col.countValuesGreaterThan(15) << std::endl;
+    //int t = col.getValueAt(3); // to test out_of_range exception
 }
 
 void test_part2_multitype() {
@@ -42,11 +49,11 @@ void test_part2_multitype() {
 
     std::cout << "[INFO] Insertion des lignes..." << std::endl;
 
-    myDataframe.insertRow({ std::string("Alice"), 20, 15.5f });
-    myDataframe.insertRow({ std::string("Bob"), 22, 12.0f });
-    myDataframe.insertRow({ std::string("Charlie"), 20, 18.5f });
+    myDataframe.insertRow({std::string("Alice"), 20, 15.5f});
+    myDataframe.insertRow({std::string("Bob"), 22, 12.0f});
+    myDataframe.insertRow({std::string("Charlie"), 20, 18.5f});
 
-    myDataframe.insertRow({ std::string("David"), std::monostate{}, 9.5f });
+    myDataframe.insertRow({std::string("David"), std::monostate{}, 9.5f});
 
     std::cout << "\n--- Affichage du Dataframe ---" << std::endl;
     myDataframe.print();
@@ -68,64 +75,136 @@ void test_part2_multitype() {
 }
 
 void test_dataframe_class() {
-	std::cout << "=== TEST CDATAFRAME ===" << std::endl;
-	CDataFrame myDataframe;
+    std::cout << "=== TEST CDATAFRAME ===" << std::endl;
+    CDataFrame myDataframe;
 
-	myDataframe.addColumn("ID", ColumnType::INT);
-	myDataframe.addColumn("Age", ColumnType::INT);
-	myDataframe.addColumn("Score", ColumnType::INT);
+    myDataframe.addColumn("ID", ColumnType::INT);
+    myDataframe.addColumn("Age", ColumnType::INT);
+    myDataframe.addColumn("Score", ColumnType::INT);
 
-	myDataframe.insertRow({ 1, 20, 100 });
-	myDataframe.insertRow({ 2, 21, 200 });
-	myDataframe.insertRow({ 3, 22, 300 });
-	myDataframe.insertRow({ 4, 20, 150 });
+    myDataframe.insertRow({1, 20, 100});
+    myDataframe.insertRow({2, 21, 200});
+    myDataframe.insertRow({3, 22, 300});
+    myDataframe.insertRow({4, 20, 150});
 
-	std::cout << "--- Affichage complet ---" << std::endl;
-	myDataframe.print();
+    std::cout << "--- Affichage complet ---" << std::endl;
+    myDataframe.print();
 
-	std::cout << "--- Renommage 'Score' en 'Points' ---" << std::endl;
-	myDataframe.renameColumn("Score", "Points");
+    std::cout << "--- Renommage 'Score' en 'Points' ---" << std::endl;
+    myDataframe.renameColumn("Score", "Points");
 
-	std::cout << "--- Remplacement val (ligne 0, col 1) 20 -> 99 ---" << std::endl;
-	myDataframe.replaceValue(0, 1, 99);
+    std::cout << "--- Remplacement val (ligne 0, col 1) 20 -> 99 ---" << std::endl;
+    myDataframe.replaceValue(0, 1, 99);
 
-	std::cout << "--- Suppression ligne 2 (ID 3) ---" << std::endl;
-	myDataframe.deleteRow(2);
+    std::cout << "--- Suppression ligne 2 (ID 3) ---" << std::endl;
+    myDataframe.deleteRow(2);
 
-	myDataframe.print();
+    myDataframe.print();
 
-	std::cout << "--- Statistiques ---" << std::endl;
-	std::cout << "Valeurs > 150 : " << myDataframe.countValuesGreaterThan(150) << std::endl;
-	std::cout << "Valeurs == 200 : " << myDataframe.countValuesEqualTo(200) << std::endl;
+    std::cout << "--- Statistiques ---" << std::endl;
+    std::cout << "Valeurs > 150 : " << myDataframe.countValuesGreaterThan(150) << std::endl;
+    std::cout << "Valeurs == 200 : " << myDataframe.countValuesEqualTo(200) << std::endl;
 }
 
 void test_section6_tri() {
-	std::cout << "\n\n=== TEST SECTION 6 : TRI ===" << std::endl;
+    std::cout << "\n\n=== TEST SECTION 6 : TRI ===" << std::endl;
 
-	Column col(ColumnType::INT, "Valeurs");
-	col.insertValue(52);
-	col.insertValue(44);
-	col.insertValue(15);
-	col.insertValue(18);
+    Column col(ColumnType::INT, "Valeurs");
+    col.insertValue(52);
+    col.insertValue(44);
+    col.insertValue(15);
+    col.insertValue(18);
 
-	std::cout << "--- Colonne avant tri ---" << std::endl;
-	col.print();
+    std::cout << "--- Colonne avant tri ---" << std::endl;
+    col.print();
 
-	std::cout << "--- Tri croissant ---" << std::endl;
-	col.sort(true);
-	col.printSorted(true);
+    std::cout << "--- Tri croissant ---" << std::endl;
+    col.sort(true);
+    col.printSorted(true);
 
-	std::cout << "--- Tri decroissant ---" << std::endl;
-	col.sort(false);
-	col.printSorted(false);
+    std::cout << "--- Tri decroissant ---" << std::endl;
+    col.sort(false);
+    col.printSorted(false);
 
-	int searchVal = 40;
-	int result = col.searchValue(searchVal);
-	if (result == 1) {
-		std::cout << "Valeur " << searchVal << " trouvee dans la colonne" << std::endl;
-	} else if (result == 0) {
-		std::cout << "Valeur " << searchVal << " non trouvee dans la colonne" << std::endl;
-	} else {
-		std::cout << "Colonne non triee, recherche impossible" << std::endl;
-	}
+    int searchVal = 40;
+    int result = col.searchValue(searchVal);
+    if (result == 1) {
+        std::cout << "Valeur " << searchVal << " trouvee dans la colonne" << std::endl;
+    } else if (result == 0) {
+        std::cout << "Valeur " << searchVal << " non trouvee dans la colonne" << std::endl;
+    } else {
+        std::cout << "Colonne non triee, recherche impossible" << std::endl;
+    }
+}
+
+void test_applyFunction_columns() {
+    std::cout << "\n\n=== TEST APPLYFUNCTION (PARTIE 2) ===" << std::endl;
+
+    // ===== TEST 1 : applyFunction sur UNE colonne =====
+    std::cout << "\n--- Test applyFunction sur une colonne (somme) ---" << std::endl;
+
+    Column col(ColumnType::INT, "ColA");
+    col.insertValue(10);
+    col.insertValue(20);
+    col.insertValue(30);
+    col.insertValue(std::monostate{}); // test NULL
+
+    col.print();
+
+    auto sumFunc = [](int acc, int v) {
+        return acc + v;
+    };
+
+    int sum = col.applyFunction<decltype(sumFunc), int>(sumFunc);
+
+    std::cout << "Somme des valeurs : " << sum << std::endl;
+
+    // ===== TEST 2 : applyFunction sur DEUX colonnes =====
+    std::cout << "\n--- Test applyFunction sur deux colonnes (addition) ---" << std::endl;
+
+    Column col1(ColumnType::INT, "Col1");
+    Column col2(ColumnType::INT, "Col2");
+
+    col1.insertValue(5);
+    col1.insertValue(10);
+    col1.insertValue(15);
+
+    col2.insertValue(2);
+    col2.insertValue(4);
+    col2.insertValue(std::monostate{}); // NULL volontaire
+
+    col1.print();
+    col2.print();
+
+    auto colResult = Column::applyFunction(
+        col1,
+        col2,
+        ColumnType::INT,
+        [](int a, int b) {
+            return a + b;
+        }
+    );
+
+    if (colResult) {
+        std::cout << "\n--- Colonne resultat (Col1 + Col2) ---" << std::endl;
+        colResult->print();
+    } else {
+        std::cout << "Erreur : colonnes incompatibles" << std::endl;
+    }
+
+    // ===== TEST 3 : comparaison (bool) =====
+    std::cout << "\n--- Test applyFunction (comparaison >) ---" << std::endl;
+
+    auto colCompare = Column::applyFunction(
+        col1,
+        col2,
+        ColumnType::INT,
+        [](int a, int b) {
+            return a > b ? 1 : 0;
+        }
+    );
+
+    if (colCompare) {
+        colCompare->print();
+    }
 }

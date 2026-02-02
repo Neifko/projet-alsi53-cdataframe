@@ -165,7 +165,7 @@ public :
     * @return : Result of the operation
     */
     template<typename Func, typename ResultType>
-    ResultType applyFunction(Func func);
+    ResultType applyFunction(Func func) const;
 
     /**
     * @brief : Apply a function on 2 columns to create a 3rd
@@ -182,5 +182,69 @@ public :
         Func func
     );
 };
+
+template<typename Func, typename ResultType>
+ResultType Column::applyFunction(Func func) const {
+    ResultType result{}; // valeur initiale par défaut
+
+    for (const auto& v : data) {
+        std::visit([&](auto&& arg) {
+            using T = std::decay_t<decltype(arg)>;
+
+            // Ignorer les valeurs NULL
+            if constexpr (std::is_same_v<T, std::monostate>) {
+                return;
+            }
+            // Appliquer uniquement aux types arithmétiques
+            else if constexpr (std::is_arithmetic_v<T>) {
+                result = func(result, arg);
+            }
+        }, v);
+    }
+
+    return result;
+}
+
+template<typename Func>
+std::unique_ptr<Column> Column::applyFunction(const Column &col1, const Column &col2, ColumnType resultType, Func func) {
+    // Vérification de taille
+    if (col1.getSize() != col2.getSize()) {
+        return nullptr;
+    }
+
+    // Création de la colonne résultat
+    auto result = std::make_unique<Column>(resultType, "result");
+
+    for (size_t i = 0; i < col1.getSize(); ++i) {
+        const auto &v1 = col1.getValueAt(i);
+        const auto &v2 = col2.getValueAt(i);
+
+        ColumnValue newValue = std::monostate{};
+
+        std::visit([&](auto&& a, auto&& b) {
+            using T1 = std::decay_t<decltype(a)>;
+            using T2 = std::decay_t<decltype(b)>;
+
+            // Si l'un des deux est NULL → NULL
+            if constexpr (
+                std::is_same_v<T1, std::monostate> ||
+                std::is_same_v<T2, std::monostate>
+            ) {
+                newValue = std::monostate{};
+            }
+            // Si les deux sont arithmétiques
+            else if constexpr (
+                std::is_arithmetic_v<T1> &&
+                std::is_arithmetic_v<T2>
+            ) {
+                newValue = func(a, b);
+            }
+        }, v1, v2);
+
+        result->insertValue(newValue);
+    }
+
+    return result;
+}
 
 #endif //PROJET_ALSI53_CDATAFRAME_COLUMN_H
