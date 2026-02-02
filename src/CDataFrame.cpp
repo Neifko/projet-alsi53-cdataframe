@@ -177,20 +177,20 @@ void CDataFrame::fillDataFrame(const std::vector<std::vector<ColumnValue>>& data
     }
 }
 
-//void CDataFrame::fillDataFrame() {
-//    int nbRows;
-//    std::cout << "How many rows do you want to add? ";
-//    std::cin >> nbRows;
-//
-//    for (int i = 0; i < nbRows; ++i) {
-//        std::vector<int> rowValues;
-//        std::cout << "Row " << i << " : " << std::endl;
-//        for (const auto& col : columns) {
-//            int val;
-//            std::cout << "Value for " << col->getName() << ": ";
-//            std::cin >> val;
-//            rowValues.push_back(val);
-//        }
-//        insertRow(rowValues);
-//    }
-//}
+void CDataFrame::fillDataFrame() {
+    int nbRows;
+    std::cout << "How many rows do you want to add? ";
+    std::cin >> nbRows;
+
+    for (int i = 0; i < nbRows; ++i) {
+        std::vector<ColumnValue> rowValues;
+        std::cout << "Row " << i << " : " << std::endl;
+        for (const auto& col : columns) {
+            int val;
+            std::cout << "Value for " << col->getName() << ": ";
+            std::cin >> val;
+            rowValues.push_back(val);
+        }
+        insertRow(rowValues);
+    }
+}

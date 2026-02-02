@@ -14,15 +14,36 @@ public:
     CDataFrame() = default;
 
     /**
+    * @brief Constructor - Create a dataframe
+    * @param types : Vector of column types
+    */
+    CDataFrame(const std::vector<ColumnType> &types);
+
+    /**
      *Fill the dataframe with user typed data
      */
-    //void fillDataFrame();
+    void fillDataFrame();
 
-    void fillDataFrame(const std::vector<std::vector<ColumnValue>>& data);
+    /**
+     * Fill the dataframe with given data
+     * @param data : 2D vector of data to fill the dataframe
+     */
+    void fillDataFrame(const std::vector<std::vector<ColumnValue> > &data);
+
     /**
     * @brief Display the entire dataframe content
     */
     void print() const;
+
+    /**
+    * @brief Display the first 10 rows of the dataframe
+    */
+    void printHead() const;
+
+    /**
+    * @brief Display the last 10 rows of the dataframe
+    */
+    void printTail() const;
 
     /**
      *Display a certain number of rows of the dataframe between startRow and endRow
@@ -43,7 +64,8 @@ public:
     * @param values : Vector of values to insert
     * @return : true if successful
     */
-    bool insertRow(const std::vector<ColumnValue>& values);
+    bool insertRow(const std::vector<ColumnValue> &values);
+
     /**
      *Delete a row by index
      * @param rowIndex : index of the row to delete
@@ -71,25 +93,34 @@ public:
     void renameColumn(const std::string &oldName, const std::string &newName);
 
     /**
+    * @brief Set column names
+    * @param names : Vector of column names
+    */
+    void setColumnNames(const std::vector<std::string>& names);
+
+    /**
      *Check if a value exists in the dataframe
      * @param value : value to search
      * @return : true if the value exists, false otherwise
      */
-    bool valueExists(const ColumnValue& value) const;
+    bool valueExists(const ColumnValue &value) const;
+
     /**
      *Get a value from the dataframe by indexes
      * @param rowIndex : row index of the value to get
      * @param colIndex : column index of the value to get
      * @return : value at the given indexes
      */
-    const ColumnValue& getValue(size_t rowIndex, size_t colIndex) const;
+    const ColumnValue &getValue(size_t rowIndex, size_t colIndex) const;
+
     /**
      *Replace value in the dataframe, find the value by indexes
      * @param rowIndex : row index of the value to replace
      * @param colIndex : column index of the value to replace
      * @param newValue : new value to set
      */
-    void replaceValue(size_t rowIndex, size_t colIndex, const ColumnValue& newValue);
+    void replaceValue(size_t rowIndex, size_t colIndex, const ColumnValue &newValue);
+
     /**
     * @brief Get the number of columns
     * @return : Number of columns
@@ -107,21 +138,21 @@ public:
      * @param value : value to count
      * @return : number of cells equals to the given value
      */
-    size_t countValuesEqualTo(const ColumnValue& value) const;
+    size_t countValuesEqualTo(const ColumnValue &value) const;
 
     /**
      *Count the number of cells greater than a given value in the dataframe
      * @param value : value to compare
      * @return : number of cells greater than the given value
      */
-    size_t countValuesGreaterThan(const ColumnValue& value) const;
+    size_t countValuesGreaterThan(const ColumnValue &value) const;
 
     /**
      *Count the number of cells less than a given value in the dataframe
      * @param value : value to compare
      * @return : number of cells less than the given value
      */
-    size_t countValuesLessThan(const ColumnValue& value) const;
+    size_t countValuesLessThan(const ColumnValue &value) const;
 
     /**
     * @brief Display dataframe information
